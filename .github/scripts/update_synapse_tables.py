@@ -16,8 +16,10 @@ def delete_table_rows(syn: Synapse, table_id: str) -> None:
     :param syn: synapse client
     :param table_id: table id to delete rows for
     """
+    print("Deleting rows from table {table_id}")
     results = syn.tableQuery(f"select * from {table_id}")
     syn.delete(results)
+    print("Finished deleting rows")
 
 
 def populate_table(syn: Synapse, table: dict) -> None:
@@ -25,19 +27,26 @@ def populate_table(syn: Synapse, table: dict) -> None:
     :param syn: synapse client
     :param table: dict of table id and associated tsv file to use for populating
     """
-    syn.store(Table(table.get("id"), "project/data/%s" % table.get("file")))
+    filename = table.get("file")
+    print(f"Populating table {filename}")
+    syn.store(Table(table.get("id"), f"project/data/{filename}"))
+    print("Finished populating table")
 
 
 def main():
     try:
+        print("Creating synapse client...")
         syn = Synapse()
         auth_token = os.getenv('SYNAPSE_AUTH_TOKEN')
         if not auth_token:
             raise ValueError("SYNAPSE_AUTH_TOKEN environment variable is not set")
+        print("Signing in...")
         syn.login(authToken=auth_token)
 
         for table in TABLES_TO_UPDATE:
+            print(f"Creating snapshot for table: {table.get("file")}")
             syn.create_snapshot_version(table.get("id"))
+            print("Finished creating snapshot.")
             delete_table_rows(syn, table.get("id"))
             populate_table(syn, table)
     except Exception as e:

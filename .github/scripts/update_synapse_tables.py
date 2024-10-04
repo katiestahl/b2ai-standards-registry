@@ -44,7 +44,7 @@ def main():
         syn.login(authToken=auth_token)
 
         for table in TABLES_TO_UPDATE:
-            print(f"Creating snapshot for table: {table.get("file")}")
+            print(f"Creating snapshot for table")
             syn.create_snapshot_version(table.get("id"))
             print("Finished creating snapshot.")
             delete_table_rows(syn, table.get("id"))

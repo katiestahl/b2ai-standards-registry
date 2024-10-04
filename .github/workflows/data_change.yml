@@ -28,6 +28,6 @@ jobs:
 
       - name: Run script to update synapse tables
         run: |
-          python3 scripts/update_synapse_tables.py
+          python3 .github/scripts/update_synapse_tables.py
         env:
           SYNAPSE_AUTH_TOKEN: ${{ secrets.SYNAPSE_AUTH_TOKEN }}

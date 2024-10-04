@@ -1,0 +1,33 @@
+name: "Run script to update synapse tables"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'project/data/*.tsv'
+
+jobs:
+  update_synapse_tables:
+    name: Run script to update synapse tables with data changes
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install synapseclient
+
+      - name: Run script to update synapse tables
+        run: |
+          python3 scripts/update_synapse_tables.py
+        env:
+          SYNAPSE_AUTH_TOKEN: ${{ secrets.SYNAPSE_AUTH_TOKEN }}

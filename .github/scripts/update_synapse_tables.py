@@ -1,15 +1,13 @@
 import csv
+import sys
 from synapseclient import Synapse, Table
 import os
 
-# synapse table ids
-DATA_STANDARD_OR_TOOL_TABLE = {"id": "syn63559764", "file": "project/data/DataStandardOrTool.tsv"}
-DATA_SUBSTRATE_TABLE = ""
-DATA_TOPIC_TABLE = ""
-ORGANIZATION_TABLE = ""
-USE_CASE_TABLE = ""
+path_to_table_data = "project/data/"
 
-TABLES_TO_UPDATE = [DATA_STANDARD_OR_TOOL_TABLE]
+# synapse tables to their ids
+TABLES_TO_IDS = {"project/data/DataStandardOrTool.tsv": "syn63559764",
+                 "project/data/DataTopic.tsv": "syn63660283"}
 
 
 def delete_table_rows(syn: Synapse, table_id: str) -> None:
@@ -34,20 +32,26 @@ def get_rows_from_tsv(file_path: str):
             rows.append(row)
     return rows
 
-def populate_table(syn: Synapse, table: dict) -> None:
+def populate_table(syn: Synapse, update_file: str, table_id: int) -> None:
     """Populate the table with updated data
     :param syn: synapse client
-    :param table: dict of table id and associated tsv file to use for populating
+    :param update_file: path for tsv file containing data to populate the table
+    :param table_id: id for table to populate
     """
-    filename = table.get("file")
-    rows_to_add = get_rows_from_tsv(filename)
-    print(f"Populating table {filename}")
+    rows_to_add = get_rows_from_tsv(update_file)
+    print(f"Populating table {update_file}")
     table = syn.store(Table(table.get("id"), rows_to_add))
     print("Finished populating table")
 
 
 def main():
     try:
+        changed_files = sys.argv[1:]
+
+        if not changed_files:
+            print("No relevant files passed to the script.")
+            return
+
         print("Creating synapse client...")
         syn = Synapse()
         auth_token = os.getenv('SYNAPSE_AUTH_TOKEN')
@@ -56,12 +60,13 @@ def main():
         print("Signing in...")
         syn.login(authToken=auth_token)
 
-        for table in TABLES_TO_UPDATE:
-            print(f"Creating snapshot for table")
-            syn.create_snapshot_version(table.get("id"))
-            print("Finished creating snapshot.")
-            delete_table_rows(syn, table.get("id"))
-            populate_table(syn, table)
+        for changed_file in changed_files:
+                table_id = TABLES_TO_IDS.get(changed_file)
+                print(f"Creating snapshot for table {changed_file}")
+                syn.create_snapshot_version(table_id)
+                delete_table_rows(syn, table_id)
+                populate_table(syn, changed_file, table_id)
+
     except Exception as e:
         print(f"An error occurred when trying to update synapse tables: {e}")
 

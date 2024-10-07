@@ -26,8 +26,16 @@ jobs:
         run: |
           python3 -m pip install synapseclient
 
+      - name: Get changed files
+        id: changes
+        run: |
+          echo "CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'project/data/')" >> $GITHUB_ENV
+
       - name: Run script to update synapse tables
         run: |
-          python3 .github/scripts/update_synapse_tables.py
+          if [ -n "${{ env.CHANGED_FILES }}" ]; then
+            python3 .github/scripts/update_synapse_tables.py ${{ env.CHANGED_FILES }}
+          else
+            echo "No relevant TSV files changed."
         env:
           SYNAPSE_AUTH_TOKEN: ${{ secrets.SYNAPSE_AUTH_TOKEN }}

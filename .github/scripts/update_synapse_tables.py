@@ -3,7 +3,7 @@ from synapseclient import Synapse, Table
 import os
 
 # synapse table ids
-DATA_STANDARD_OR_TOOL_TABLE = {"id": "syn63559764", "file": "DataStandardOrTool.tsv"}
+DATA_STANDARD_OR_TOOL_TABLE = {"id": "syn63559764", "file": "project/data/DataStandardOrTool.tsv"}
 DATA_SUBSTRATE_TABLE = ""
 DATA_TOPIC_TABLE = ""
 ORGANIZATION_TABLE = ""

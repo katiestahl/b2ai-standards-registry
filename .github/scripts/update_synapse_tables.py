@@ -1,3 +1,4 @@
+import csv
 from synapseclient import Synapse, Table
 import os
 
@@ -22,14 +23,26 @@ def delete_table_rows(syn: Synapse, table_id: str) -> None:
     print("Finished deleting rows")
 
 
+def get_rows_from_tsv(file_path: str):
+    """Read a TSV file and return a list of lists, where each inner list represents a row."""
+    rows = []
+    with open(file_path, mode='r', newline='', encoding='utf-8') as tsv_file:
+        reader = csv.reader(tsv_file, delimiter='\t')
+        # Skip the header row
+        next(reader)
+        for row in reader:
+            rows.append(row)
+    return rows
+
 def populate_table(syn: Synapse, table: dict) -> None:
     """Populate the table with updated data
     :param syn: synapse client
     :param table: dict of table id and associated tsv file to use for populating
     """
     filename = table.get("file")
+    rows_to_add = get_rows_from_tsv(filename)
     print(f"Populating table {filename}")
-    syn.store(Table(table.get("id"), f"project/data/{filename}"))
+    table = syn.store(Table(table.get("id"), rows_to_add))
     print("Finished populating table")
 
 

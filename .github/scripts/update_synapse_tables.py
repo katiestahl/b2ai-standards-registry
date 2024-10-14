@@ -61,11 +61,11 @@ def main():
         syn.login(authToken=auth_token)
 
         for changed_file in changed_files:
-                table_id = TABLES_TO_IDS.get(changed_file)
-                print(f"Creating snapshot for table {changed_file}")
-                syn.create_snapshot_version(table_id)
-                delete_table_rows(syn, table_id)
-                populate_table(syn, changed_file, table_id)
+            table_id = TABLES_TO_IDS.get(changed_file)
+            print(f"Creating snapshot for table {changed_file}")
+            syn.create_snapshot_version(table_id)
+            delete_table_rows(syn, table_id)
+            populate_table(syn, changed_file, table_id)
 
     except Exception as e:
         print(f"An error occurred when trying to update synapse tables: {e}")

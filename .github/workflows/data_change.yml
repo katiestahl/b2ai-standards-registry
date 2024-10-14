@@ -43,5 +43,6 @@ jobs:
             python3 .github/scripts/update_synapse_tables.py ${{ env.CHANGED_FILES }}
           else
             echo "No relevant TSV files changed."
+          fi
         env:
           SYNAPSE_AUTH_TOKEN: ${{ secrets.SYNAPSE_AUTH_TOKEN }}

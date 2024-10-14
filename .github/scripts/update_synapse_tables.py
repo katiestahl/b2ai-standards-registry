@@ -40,7 +40,7 @@ def populate_table(syn: Synapse, update_file: str, table_id: int) -> None:
     """
     rows_to_add = get_rows_from_tsv(update_file)
     print(f"Populating table {update_file}")
-    table = syn.store(Table(table.get("id"), rows_to_add))
+    table = syn.store(Table(table_id, rows_to_add))
     print("Finished populating table")
 
 

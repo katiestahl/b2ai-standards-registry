@@ -3,11 +3,14 @@ import sys
 from synapseclient import Synapse, Table
 import os
 
-path_to_table_data = "project/data/"
 
-# synapse tables to their ids
-TABLES_TO_IDS = {"project/data/DataStandardOrTool.tsv": "syn63559764",
-                 "project/data/DataTopic.tsv": "syn63660283"}
+# the paths detected as changes from the "Get changed files" job mapped to their corresponding synapse table ids
+PATHS_TO_IDS = {"project/data/DataStandardOrTool.tsv": "syn63096833",
+                 "project/data/DataSubstrate.tsv": "syn63096834",
+                 "project/data/DataTopic.tsv": "syn63096835",
+                 "project/data/Organization.tsv": "syn63096836",
+                 "project/data/UseCase.tsv": "syn63096837",
+                 }
 
 
 def delete_table_rows(syn: Synapse, table_id: str) -> None:
@@ -42,7 +45,7 @@ def populate_table(syn: Synapse, update_file: str, table_id: int) -> None:
     :param table_id: id for table to populate
     """
     rows_to_add = get_rows_from_tsv(update_file)
-    print(f"Populating table {update_file}")
+    print(f"Populating table for file: {update_file}")
     table = syn.store(Table(table_id, rows_to_add))
     print("Finished populating table")
 
@@ -64,7 +67,7 @@ def main():
         syn.login(authToken=auth_token)
 
         for changed_file in changed_files:
-            table_id = TABLES_TO_IDS.get(changed_file)
+            table_id = PATHS_TO_IDS.get(changed_file)
             print(f"Creating snapshot for table {changed_file}")
             syn.create_snapshot_version(table_id)
             delete_table_rows(syn, table_id)

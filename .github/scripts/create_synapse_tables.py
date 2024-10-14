@@ -3,7 +3,7 @@ Going to commit this as-is for now, in case it is needed in the future or can be
 Hopefully will get some time someday to make cleaner.
 This script shouldn't need to be run again except in the case of schema changes
 PLEASE NOTE: THIS WILL DELETE ALL CURRENT CONTENTS OF EXISTING TABLES WITHOUT TAKING SNAPSHOTS.
-Ideally, update_synapse_tables.py would be run afterwards for all tables, or this script should be updated to populate values based on current files."""
+Ideally, update_synapse_tables.py would be run afterwards for all tables, or this script should be updated to populate values based on current data files."""
 from synapseclient import Synapse, Table, Column, Schema
 
 syn = Synapse()

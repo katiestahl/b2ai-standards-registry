@@ -22,7 +22,10 @@ def delete_table_rows(syn: Synapse, table_id: str) -> None:
 
 
 def get_rows_from_tsv(file_path: str):
-    """Read a TSV file and return a list of lists, where each inner list represents a row."""
+    """Read a TSV file and return a list of lists, where each inner list represents a row.
+    NOTE: The first row of the file is expected to be the headers, which is skipped
+    :param file_path: path to tsv file
+    :return: list of lists representing rows of the tsv file"""
     rows = []
     with open(file_path, mode='r', newline='', encoding='utf-8') as tsv_file:
         reader = csv.reader(tsv_file, delimiter='\t')
@@ -69,6 +72,7 @@ def main():
 
     except Exception as e:
         print(f"An error occurred when trying to update synapse tables: {e}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

@@ -5,12 +5,13 @@ import os
 
 
 # the paths detected as changes from the "Get changed files" job mapped to their corresponding synapse table ids
-PATHS_TO_IDS = {"project/data/DataStandardOrTool.tsv": "syn63096833",
-                 "project/data/DataSubstrate.tsv": "syn63096834",
-                 "project/data/DataTopic.tsv": "syn63096835",
-                 "project/data/Organization.tsv": "syn63096836",
-                 "project/data/UseCase.tsv": "syn63096837",
-                 }
+PATHS_TO_IDS = {
+    "project/data/DataStandardOrTool.tsv": "syn63096833",
+    "project/data/DataSubstrate.tsv": "syn63096834",
+    "project/data/DataTopic.tsv": "syn63096835",
+    "project/data/Organization.tsv": "syn63096836",
+    "project/data/UseCase.tsv": "syn63096837",
+}
 
 
 def delete_table_rows(syn: Synapse, table_id: str) -> None:
@@ -30,13 +31,14 @@ def get_rows_from_tsv(file_path: str):
     :param file_path: path to tsv file
     :return: list of lists representing rows of the tsv file"""
     rows = []
-    with open(file_path, mode='r', newline='', encoding='utf-8') as tsv_file:
-        reader = csv.reader(tsv_file, delimiter='\t')
+    with open(file_path, mode="r", newline="", encoding="utf-8") as tsv_file:
+        reader = csv.reader(tsv_file, delimiter="\t")
         # Skip the header row
         next(reader)
         for row in reader:
             rows.append(row)
     return rows
+
 
 def populate_table(syn: Synapse, update_file: str, table_id: int) -> None:
     """Populate the table with updated data
@@ -60,7 +62,7 @@ def main():
 
         print("Creating synapse client...")
         syn = Synapse()
-        auth_token = os.getenv('SYNAPSE_AUTH_TOKEN')
+        auth_token = os.getenv("SYNAPSE_AUTH_TOKEN")
         if not auth_token:
             raise ValueError("SYNAPSE_AUTH_TOKEN environment variable is not set")
         print("Signing in...")
